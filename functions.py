@@ -1,23 +1,15 @@
-# done by Muench
-# Creation Date: 2021/12/10 14:04
-# -*- coding:utf-8 -*-
-
 import streamlit as st
+
 import pandas as pd
 import numpy as np
 from io import BytesIO
-from pandas.api.types import is_numeric_dtype
-from pandas.api.types import is_string_dtype
-
-# 全局变量
-# df = pd.DataFrame()
 
 
 # 数据处理
 def page1():
     # global df
     st.write("This is page1")
-    data = st.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xls'])
+    data = st.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xls'], key='page1_file_upload')
     if data is not None:
         # if data.type == "application/vnd.ms-excel":
         if data.name[-3:] == "csv" or data.name[-3:] == "txt":
@@ -213,12 +205,6 @@ def page1():
                     st.write(1)
                     st.write(df)
 
-
-
-
-
-
-
         # 功能5：删除用户选定的行或列
         with st.expander(label="功能5：删除用户选定的行或列", expanded=False):
             with st.container():
@@ -373,6 +359,7 @@ def page1():
                                            data=convert2csv_df(df),
                                            file_name='test.csv',
                                            mime='text/csv',
+                                           key='download_as_csv',
                                            help='click to download the above data as CSV'
                                            )
                 with p2:
@@ -381,15 +368,10 @@ def page1():
                                            data=convert2excel_df(df),
                                            file_name='test.xlsx',
                                            mime='text/xlsx',
+                                           key='download_as_xlsx',
                                            help='click to download the above data as XLSX(one sheet)'
                                            # https://discuss.streamlit.io/t/download-xlsx-file-with-multiple-sheets-in-streamlit/11509/2
                                            )
-
-            '''
-            st.button(label='Download data as XLSX',
-                      on_click=convert2xlsx_df(df),
-                      help='click to download the above data as XLSX')
-            '''
 
         # 功能9：展示各个维度的参数
         with st.expander(label="功能9：展示各个维度的参数", expanded=False):

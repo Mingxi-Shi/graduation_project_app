@@ -1,7 +1,9 @@
 import streamlit as st
-import datetime
+import pandas as pd
+from io import BytesIO
 
 from functions import *
+import datetime
 
 
 def main():
@@ -13,7 +15,6 @@ def main():
 
     st.sidebar.title("施明希的个人Web")
     menu = st.sidebar.selectbox('选择业务', ('数据处理和分析', '机器学习', '自然语言处理', '案例展示'))
-    # st.sidebar.write(menu1)
 
     if menu == "数据处理和分析":
         menu1_1 = st.sidebar.radio('选择', ('数据处理', '数据分析', '数据挖掘'))
@@ -47,25 +48,20 @@ def main():
     elif menu == "案例展示":
         pageExample()
 
-    # st.sidebar.write(menu1_1)
-
     date = st.sidebar.date_input(
         label="Select a day",
         value=datetime.datetime.now(),
         help="You need to get help?\tContact us")
-    # st.sidebar.write(date)
 
     time = st.sidebar.time_input(
         label="Select an alarm",
         value=datetime.time(8, 00),
         help="You need to get help?\tContact us")
-    # st.sidebar.write(time)
 
     color = st.sidebar.color_picker(
         label="Pick a color",
         value="#00f900",
         help="You need to get help?\tContact us")
-    # st.sidebar.write(color)
 
     st.sidebar.write("BGM func coming soon")
     st.sidebar.button("设置中心")
