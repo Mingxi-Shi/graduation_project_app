@@ -5,4 +5,4 @@ mysql-connector-python==8.0.27
 requests==2.26.0
 openpyxl==3.0.9
 xlsxwriter==3.0.2
-
+xlrd==1.2
