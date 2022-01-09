@@ -12,7 +12,6 @@ def main():
                        layout="wide",
                        initial_sidebar_state="auto",
                        menu_items={'About': None})
-
     st.sidebar.title("施明希的个人Web")
     menu = st.sidebar.selectbox('选择业务', ('数据处理和分析', '机器学习', '自然语言处理', '案例展示'))
 

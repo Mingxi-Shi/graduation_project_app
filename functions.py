@@ -7,27 +7,15 @@ from io import BytesIO
 
 # 数据处理
 def page1():
-    # global df
     st.write("This is page1")
     data = st.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xls'], key='page1_file_upload')
     if data is not None:
-        # if data.type == "application/vnd.ms-excel":
         if data.name[-3:] == "csv" or data.name[-3:] == "txt":
-            # st.write("This is csv")
             df = pd.read_csv(data)
-            if st.checkbox("Show All data"):  # 默认显示前20行，选中即显示全部数据
-                st.dataframe(df)
-            else:
-                st.dataframe(df.head(20))
-
-        # elif data.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            st.dataframe(df.head(20))
         elif data.name[-3:] == "xls" or data.name[-4:] == "xlsx":
-            # st.write("This is excel")
             df = pd.read_excel(data)
-            if st.checkbox("Show All data"):  # 默认显示前20行，选中即显示全部数据
-                st.dataframe(df)
-            else:
-                st.dataframe(df.head(20))
+            st.dataframe(df.head(20))
 
         st.write("每个功能模块都在container内")
         # 功能0：修改列数据类型
@@ -38,7 +26,7 @@ def page1():
                 p1, p2 = st.columns([1, 5])
                 with p1:
                     for i in range(len(df_columns_name)):
-                        modified_datatype[i] = st.selectbox(label='选择列 [ '+df_columns_name[i]+' ]的数据类型',
+                        modified_datatype[i] = st.selectbox(label='选择列 [ ' + df_columns_name[i] + ' ]的数据类型',
                                                             options=['string', 'int64', 'float64', 'bool'], key=i,
                                                             index=judge_original_datatype(df, i))
                     temp = convert_df_columns_datatype(df, df_columns_name, modified_datatype)
@@ -243,7 +231,6 @@ def page1():
                     if st.button("确认删除列"):
                         df = temp_deleted_columns
                         st.write(df)
-
         # 功能6：修改列名或单元内容
         with st.expander(label="功能6：修改列名或单元内容", expanded=False):
             with st.container():
@@ -352,26 +339,23 @@ def page1():
         # 功能8：新数据导出
         with st.expander(label="功能8：新数据导出", expanded=False):
             with st.container():
-                p1, p2 = st.columns([1, 1])
-                with p1:
-                    if data is not None:
-                        st.download_button(label="Download data as CSV",
-                                           data=convert2csv_df(df),
-                                           file_name='test.csv',
-                                           mime='text/csv',
-                                           key='download_as_csv',
-                                           help='click to download the above data as CSV'
-                                           )
-                with p2:
-                    if data is not None:
-                        st.download_button(label="Download data as XLSX",
-                                           data=convert2excel_df(df),
-                                           file_name='test.xlsx',
-                                           mime='text/xlsx',
-                                           key='download_as_xlsx',
-                                           help='click to download the above data as XLSX(one sheet)'
-                                           # https://discuss.streamlit.io/t/download-xlsx-file-with-multiple-sheets-in-streamlit/11509/2
-                                           )
+                if data is not None:
+                    st.download_button(label="Download data as CSV",
+                                       data=convert2csv_df(df),
+                                       file_name='test.csv',
+                                       mime='text/csv',
+                                       key='download_as_csv',
+                                       help='click to download the above data as CSV'
+                                       )
+
+                    st.download_button(label="Download data as XLSX",
+                                       data=convert2excel_df(df),
+                                       file_name='test.xlsx',
+                                       mime='text/xlsx',
+                                       key='download_as_xlsx',
+                                       help='click to download the above data as XLSX(one sheet)'
+                                       # https://discuss.streamlit.io/t/download-xlsx-file-with-multiple-sheets-in-streamlit/11509/2
+                                       )
 
         # 功能9：展示各个维度的参数
         with st.expander(label="功能9：展示各个维度的参数", expanded=False):
@@ -393,7 +377,7 @@ def page1():
 def page2():
     st.write("This is page2")
     # st.dataframe(df)
-    data = st.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xls'])
+    data = st.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xls'], key='page2_file_upload')
     st.write("功能1：自动根据数据产生几张简单图表（container）")
     st.write("功能2：用户选择数据交互产生图表（container）")
     st.write("功能3：生成词云（不同列、行或全局）")
@@ -493,6 +477,18 @@ def judge_original_datatype(df, i):
     elif df[df_columns_name[i]].dtype == 'bool':
         index = 3
     return index
+
+
+def convert_df_columns_datatype(df, cols, types):
+    df_columns_name = df.columns.to_list()
+    for i in range(len(cols)):
+        if df[cols[i]].dtype == 'object':
+            if types[i] == 'int64' or types == 'float64':
+                st.write('列 [ ', cols[i], ' ] 不能修改为', types[i], '型')
+                df[cols[i]] = df[cols[i]].astype('string')
+        else:
+            df[cols[i]] = df[cols[i]].astype(types[i])
+    return df
 
 
 def drop_na_any(df):
@@ -619,4 +615,3 @@ def search_location_by_columns(df, cols, values):
         if count == len(cols):
             index.append(i)
     return index
-
