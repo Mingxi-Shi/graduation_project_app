@@ -1,9 +1,8 @@
-import pandas as pd
-import numpy as np
 import streamlit as st
 import datetime
 
 from functions import *
+
 
 def main():
     st.set_page_config(page_title="Shi Mingxi\'s Graduation Project",

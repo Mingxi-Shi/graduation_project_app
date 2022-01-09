@@ -12,6 +12,7 @@ from pandas.api.types import is_string_dtype
 # 全局变量
 # df = pd.DataFrame()
 
+
 # 数据处理
 def page1():
     # global df
