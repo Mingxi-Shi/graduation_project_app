@@ -17,10 +17,13 @@ from pandas.api.types import is_string_dtype
 def page1():
     # global df
     st.write("This is page1")
-    data = st.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xlx'])
-
+    data = st.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xls'])
+    st.write(data.name)
+    st.write(data.type)
     if data is not None:
-        if data.type == "application/vnd.ms-excel":
+
+        # if data.type == "application/vnd.ms-excel":
+        if data.name[-3:] == "csv" or data.name[-3:] == "txt":
             # st.write("This is csv")
             df = pd.read_csv(data)
             if st.checkbox("Show All data"):  # 默认显示前20行，选中即显示全部数据
@@ -28,7 +31,8 @@ def page1():
             else:
                 st.dataframe(df.head(20))
 
-        elif data.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        # elif data.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        elif data.name[-3:] == "xls" or data.name[-4:] == "xlsx":
             # st.write("This is excel")
             df = pd.read_excel(data)
             if st.checkbox("Show All data"):  # 默认显示前20行，选中即显示全部数据
