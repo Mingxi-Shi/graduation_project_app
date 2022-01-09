@@ -8,8 +8,7 @@ import numpy as np
 from io import BytesIO
 from pandas.api.types import is_numeric_dtype
 from pandas.api.types import is_string_dtype
-from xlsxwriter import Workbook
-
+import xlsxwriter
 # 全局变量
 # df = pd.DataFrame()
 
