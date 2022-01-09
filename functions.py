@@ -18,8 +18,7 @@ def page1():
     # global df
     st.write("This is page1")
     data = st.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xls'])
-    st.write(data.name)
-    st.write(data.type)
+
     if data is not None:
 
         # if data.type == "application/vnd.ms-excel":
@@ -371,20 +370,22 @@ def page1():
             with st.container():
                 p1, p2 = st.columns([1, 1])
                 with p1:
-                    st.download_button(label="Download data as CSV",
-                                       data=convert2csv_df(df),
-                                       file_name='test.csv',
-                                       mime='text/csv',
-                                       help='click to download the above data as CSV'
-                                       )
+                    if data is not None:
+                        st.download_button(label="Download data as CSV",
+                                           data=convert2csv_df(df),
+                                           file_name='test.csv',
+                                           mime='text/csv',
+                                           help='click to download the above data as CSV'
+                                           )
                 with p2:
-                    st.download_button(label="Download data as XLSX",
-                                       data=convert2excel_df(df),
-                                       file_name='test.xlsx',
-                                       mime='text/xlsx',
-                                       help='click to download the above data as XLSX(one sheet)'
-                                       # https://discuss.streamlit.io/t/download-xlsx-file-with-multiple-sheets-in-streamlit/11509/2
-                                       )
+                    if data is not None:
+                        st.download_button(label="Download data as XLSX",
+                                           data=convert2excel_df(df),
+                                           file_name='test.xlsx',
+                                           mime='text/xlsx',
+                                           help='click to download the above data as XLSX(one sheet)'
+                                           # https://discuss.streamlit.io/t/download-xlsx-file-with-multiple-sheets-in-streamlit/11509/2
+                                           )
 
             '''
             st.button(label='Download data as XLSX',
