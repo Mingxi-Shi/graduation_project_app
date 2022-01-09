@@ -5,7 +5,6 @@ import datetime
 
 from functions import *
 
-
 def main():
     st.set_page_config(page_title="Shi Mingxi\'s Graduation Project",
                        page_icon=":crown:",
