@@ -18,9 +18,7 @@ def page1():
     # global df
     st.write("This is page1")
     data = st.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xls'])
-
     if data is not None:
-
         # if data.type == "application/vnd.ms-excel":
         if data.name[-3:] == "csv" or data.name[-3:] == "txt":
             # st.write("This is csv")
@@ -413,7 +411,7 @@ def page1():
 def page2():
     st.write("This is page2")
     # st.dataframe(df)
-    data = st.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xlx'])
+    data = st.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xls'])
     st.write("功能1：自动根据数据产生几张简单图表（container）")
     st.write("功能2：用户选择数据交互产生图表（container）")
     st.write("功能3：生成词云（不同列、行或全局）")
@@ -470,14 +468,12 @@ def pageExample():
 
 
 # 转换格式函数csv
-@st.cache
 def convert2csv_df(df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
     return df.to_csv().encode('GB2312')
 
 
 # 转换格式函数xlsx
-@st.cache
 def convert2excel_df(df):
     output = BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
