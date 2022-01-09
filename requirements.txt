@@ -4,6 +4,4 @@ pandas==1.3.4
 mysql-connector-python==8.0.27
 requests
 openpyxl
-
-
-XlsxWriter~=3.0.2
+XlsxWriter==3.0.2
