@@ -12,7 +12,9 @@ from urllib.request import urlopen
 
 import spacy
 from spacy import displacy
-nlp = spacy.load("en_core_web_sm")
+# nlp = spacy.load("en_core_web_sm")
+import en_core_web_sm
+nlp = en_core_web_sm.load()
 
 from gensim.summarization import summarize
 
