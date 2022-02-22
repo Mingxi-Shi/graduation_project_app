@@ -6,10 +6,10 @@ matplotlib==3.5.0
 wordcloud==1.8.1
 gender-ai==0.1
 mysql-connector-python==8.0.27
-requests
-openpyxl
+requests==2.26.0
+openpyxl==3.0.9
 xlsxwriter
-opencv-python==4.5.5.62
+opencv-python~=4.5.5.62
 Pillow~=8.4.0
 Faker~=11.3.0
 passwordstrength~=0.2.4
