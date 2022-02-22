@@ -1,24 +1,24 @@
 
 import streamlit as st
 
-import cv2
+# import cv2
 import numpy as np
 from PIL import Image, ImageEnhance  # 图像处理标准库
 
 
-# ------------------Page7:face detection人脸检测---------------------------
-def detect_faces(original_image):
-    face_cascade = cv2.CascadeClassifier('resources/frecog/haarcascade_frontalface_default.xml')
-
-    rgb_array_img = np.array(original_image.convert('RGB'))
-    img = cv2.cvtColor(rgb_array_img, 1)
-    gray = cv2.cvtColor(rgb_array_img, cv2.COLOR_BGR2GRAY)
-    # Detect faces
-    faces = face_cascade.detectMultiScale(gray, 1.1, 4)
-    # Draw rectangle around the faces
-    for (x, y, w, h) in faces:
-        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-    return img, faces
+# # ------------------Page7:face detection人脸检测---------------------------
+# def detect_faces(original_image):
+#     face_cascade = cv2.CascadeClassifier('resources/frecog/haarcascade_frontalface_default.xml')
+#
+#     rgb_array_img = np.array(original_image.convert('RGB'))
+#     img = cv2.cvtColor(rgb_array_img, 1)
+#     gray = cv2.cvtColor(rgb_array_img, cv2.COLOR_BGR2GRAY)
+#     # Detect faces
+#     faces = face_cascade.detectMultiScale(gray, 1.1, 4)
+#     # Draw rectangle around the faces
+#     for (x, y, w, h) in faces:
+#         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+#     return img, faces
 
 
 def detect_smiles(original_image):
