@@ -9,7 +9,7 @@ mysql-connector-python==8.0.27
 requests==2.26.0
 openpyxl==3.0.9
 xlsxwriter
-opencv-python~=4.5.5.62
+opencv-python~=4.5.4
 Pillow~=8.4.0
 Faker~=11.3.0
 passwordstrength~=0.2.4
