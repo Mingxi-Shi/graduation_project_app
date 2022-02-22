@@ -2,7 +2,7 @@ import streamlit as st
 
 import pandas as pd
 import random
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from dateutil.parser import parse
 from wordcloud import WordCloud, ImageColorGenerator  # 词云库
 

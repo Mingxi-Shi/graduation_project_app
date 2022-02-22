@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 
 from functions.page8_func import *
 
@@ -51,6 +52,7 @@ def page8():
             wc.generate(txt)  # 导入字体
 
             fig, ax = plt.subplots()
+
             plt.imshow(wc)  # 以图片的形式显示词云
             # plt.imshow(wc, interpolation='bilinear')  # 以图片的形式显示词云
             plt.axis("off")  # 关闭图像坐标系
