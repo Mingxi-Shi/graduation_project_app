@@ -12,6 +12,7 @@ from textblob import TextBlob
 from snownlp import SnowNLP
 from aip import AipNlp
 
+
 # ----------------------Page12:情感分析-----------------------------------
 # Fetch Text From Url
 @st.cache

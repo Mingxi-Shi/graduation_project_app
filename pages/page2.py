@@ -2,144 +2,106 @@
 from functions.page2_func import *
 
 
-# 数据分析
 def page2():
-    st.write("This is page2")
-    data = st.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xls'], key='page2_file_upload')
+    sample_or_upload = st.sidebar.radio("上传数据集或使用内置数据集", options=['上传数据集', '内置数据集'])
+    if sample_or_upload == "上传数据集":
+        data = st.sidebar.file_uploader("上传数据", type=["csv", 'txt', 'xlsx', 'xls'], key='page2_file_upload')
+        if data is not None:
+            if data.name[-3:] == "csv" or data.name[-3:] == "txt":
+                df = pd.read_csv(data)
+            elif data.name[-3:] == "xls" or data.name[-4:] == "xlsx":
+                df = pd.read_excel(data)
+    elif sample_or_upload == "内置数据集":
+        inner_datasets = []
+        for dataset in os.listdir('datasets'):  # 用os库获取文件夹下所有文件名
+            inner_datasets.append(dataset)
+        data = st.sidebar.selectbox(label="选择数据集", options=inner_datasets)
+        if data[-3:] == "csv" or data[-3:] == "txt":
+            df = pd.read_csv('datasets/'+data)
+        elif data[-3:] == "xls" or data[-4:] == "xlsx":
+            df = pd.read_excel('datasets/'+data)
     if data is not None:
-        if data.name[-3:] == "csv" or data.name[-3:] == "txt":
-            df = pd.read_csv(data)
-            st.dataframe(df.head(20))
-        elif data.name[-3:] == "xls" or data.name[-4:] == "xlsx":
-            df = pd.read_excel(data)
-            st.dataframe(df.head(20))
 
-        with st.expander(label="功能0：载入表格的基本信息", expanded=False):
-            # 筛选不同数据类型的列（后期改为调用方法
+        selected_menu = st.sidebar.selectbox(label="选择功能", options=["数据profiler", "生成图表"])
+        if selected_menu == "数据profiler":
+            navigation_bar = option_menu(menu_title=None, options=["数据报告", "数据关系图"],
+                                         icons=["hypnotize", "hypnotize"], menu_icon="list-task",
+                                         default_index=0, orientation="horizontal")
+            if navigation_bar == "数据报告":
+                if st.button("开始生成数据报告"):
+                    # pr = ProfileReport(df=df, explorative=True, orange_mode=True)
+                    pr = ProfileReport(df=df)
+                    st_profile_report(pr)
+            elif navigation_bar == "数据关系图":
+                generate_correlated_chart(df)
+        elif selected_menu == "生成图表":
+            # 配置 ag-grid
+            gb = GridOptionsBuilder.from_dataframe(df)
+
+            update_mode = st.sidebar.selectbox("Update Mode", ["SELECTION_CHANGED", "FILTERING_CHANGED"], index=1)
+            update_mode_value = GridUpdateMode.__members__[update_mode]
+
+            gb.configure_default_column(aggFunc='sum', resizable=True, sorteable=True, filterable=True, groupable=True,
+                                        editable=True, enablePivot=True)  # 配置单元格内容可修改
+            gb.configure_side_bar(filters_panel=True, columns_panel=True)  # 侧边栏
+
+            gb.configure_selection("multiple")
+            gb.configure_columns(column_names=str(df.columns.to_list()), enablePivot=True)
+            with st.form("edit_form"):
+                ag = AgGrid(
+                    dataframe=df,
+                    gridOptions=gb.build(),
+                    height=494,
+                    fit_columns_on_grid_load=False,
+                    reload_data=False,
+                    enable_enterprise_modules=True,
+                    data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
+                    update_mode=update_mode_value,
+                )
+
+                submitted = st.form_submit_button(label="完成")
+                if submitted:
+                    if len(ag['data']) == 1 or len(ag["selected_rows"]) == 1:
+                        st.info("筛选或选择的行数需大于或等于2, 请重新提交")
+                    else:
+                        st.success("提交成功")
+
+            if update_mode == "SELECTION_CHANGED":
+                if ag["selected_rows"]:
+                    df = pd.DataFrame(ag["selected_rows"])
+            elif update_mode == "FILTERING_CHANGED":
+                df = ag['data']
+            # 选择列和行
             df_columns_name = df.columns.to_list()
-            type_of_string_columns_name = []
-            type_of_int_columns_name = []
-            type_of_float_columns_name = []
-            type_of_bool_columns_name = []
-            type_of_date_columns_name = []
+            p1, p2 = st.columns([1, 1])
+            with p1:
+                selected_columns = st.multiselect(label="选择需要的列(可多选)", options=df_columns_name, default=df_columns_name)
 
-            for i in range(len(df.columns)):
-                if df[df_columns_name[i]].dtype == 'object' and is_date(df[df_columns_name[i]][0]) is False:
-                    type_of_string_columns_name.append(df_columns_name[i])
-                elif df[df_columns_name[i]].dtype == 'int64':
-                    type_of_int_columns_name.append(df_columns_name[i])
-                elif df[df_columns_name[i]].dtype == 'float64':
-                    type_of_float_columns_name.append(df_columns_name[i])
-                elif df[df_columns_name[i]].dtype == 'bool':
-                    type_of_bool_columns_name.append(df_columns_name[i])
-                elif df[df_columns_name[i]].dtype == 'object' and is_date(df[df_columns_name[i]][0]) is True:
-                    type_of_date_columns_name.append(df_columns_name[i])
+            with p2:
+                selected_start_row, selected_end_row = st.select_slider(
+                    label='选择需要的行区间',
+                    options=df.index.to_list(),
+                    value=(0, int(df.shape[0])-1))
+                st.write('你选择的行区间为', selected_start_row, 'and', selected_end_row)
+                result = dataset_information(df)
+                st.write("行数：", result[0][0], "列数：", result[0][1])
+                st.write("该表格的字符串列有：" + str(result[1]["string"]))
+                st.write("该表格的整数型列有：" + str(result[1]["int"]))
+                st.write("该表格的浮点型列有：" + str(result[1]["float"]))
+                st.write("该表格的布尔型列有：" + str(result[1]["bool"]))
+
+            if len(selected_columns) != 0 and selected_end_row:
+                df = df.loc[selected_start_row:selected_end_row]
+                df = df[selected_columns]
+                p1.write(df)
+
+            # st.dataframe(df, height=500)
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                selected_chart_type = st.selectbox(label="选择图表类型", options=["直方图", "折线图", "散点图", "词云图"])
+            with col2:
+                st.write(1)
+
+            generate_chart(df, chart_type=selected_chart_type)
 
 
-            st.text("该表格的行数和列数：" + str(df.shape))
-            st.text("该表格的数据按列的统计信息：" + "\n" + str(df.describe()))
-            st.text("该表格的字符串列有：" + str(type_of_string_columns_name) + "\n" +
-                    "该表格的整数型列有：" + str(type_of_int_columns_name) + "\n" +
-                    "该表格的浮点型列有：" + str(type_of_float_columns_name) + "\n" +
-                    "该表格的布尔型列有：" + str(type_of_bool_columns_name) + "\n" +
-                    "该表格的日期型列有：" + str(type_of_date_columns_name) + "\n")
-
-        with st.expander(label="功能1：自动根据数据产生几张简单图表（container）", expanded=False):
-
-            # 方法一：直接random.choice随机选取一个
-            # st.write("随机选取一列：", random.choice(type_of_float_columns_name))
-            # 方法二：先random.shuffle，再输出第一个
-            # random.shuffle(df_columns_name)
-            # st.write(df_columns_name[0])
-
-            if st.checkbox("生成数值型的图表"):
-                if st.button("开始随机生成"):
-                    random_number = random.randint(1, 9)
-                    # st.write(random_number)
-                    if random_number < 4:
-                        # st.line_chart(data=df[type_of_float_columns_name], use_container_width=True)
-                        # st.line_chart(data=df[type_of_int_columns_name], use_container_width=True)
-                        st.line_chart(data=df[type_of_float_columns_name+type_of_int_columns_name], use_container_width=True)
-                    elif (random_number >= 4) & (random_number < 7):
-                        # st.area_chart(data=df[type_of_float_columns_name], use_container_width=True)
-                        # st.area_chart(data=df[type_of_int_columns_name], use_container_width=True)
-                        st.area_chart(data=df[type_of_float_columns_name+type_of_int_columns_name], use_container_width=True)
-                    elif (random_number >= 7) & (random_number < 10):
-                        # st.bar_chart(data=df[type_of_float_columns_name], use_container_width=True)
-                        # st.bar_chart(data=df[type_of_int_columns_name], use_container_width=True)
-                        st.bar_chart(data=df[type_of_float_columns_name+type_of_int_columns_name], use_container_width=True)
-
-            if st.checkbox("生成字符串型的图表"):
-                st.write(2222222222)
-            if st.checkbox("生成布尔型的图表"):
-                st.write(3333333333)
-            # 根据数据类型，每一次按钮，根据随机数，随机生成一种图（不同类型的图，不同的列）
-
-        with st.expander(label="功能2：用户选择数据交互产生图表（container）", expanded=False):
-            st.write("---判断所选列的数据类型，限制可选择的图表类型")
-            selected_column_names = st.multiselect(label='选择列(可多选)', options=df_columns_name)
-            # -------------------------加限制语句----------------------------
-            # -------------------------------------------------------------
-            selected_type_of_plot = st.selectbox("选择图表类型", ["area", "bar", "line", "hist", "box", "kde"])
-            if st.button("开始生成"):
-                st.success("客制化列{}的{}图表生成中...".format(selected_column_names, selected_type_of_plot))
-
-                if selected_type_of_plot == 'area':
-                    selected_data = df[selected_column_names]
-                    st.area_chart(selected_data)
-                elif selected_type_of_plot == 'bar':
-                    selected_data = df[selected_column_names]
-                    st.bar_chart(selected_data)
-                elif selected_type_of_plot == 'line':
-                    selected_data = df[selected_column_names]
-                    st.line_chart(selected_data)
-                elif selected_type_of_plot == 'hist':
-                    fig, ax = plt.subplots()
-                    ax.hist(x=df[selected_column_names], bins=5)
-                    st.pyplot(fig)
-                elif selected_type_of_plot == 'box':
-                    # fig, ax = plt.subplots()
-                    # custom_plot = df[selected_column_names].plot(kind='box')
-                    # st.write(custom_plot)
-                    # st.pyplot(fig=plt)
-                    # fig, ax = plt.subplots()
-                    # ax.boxplot(x=df[selected_column_names])
-                    # st.pyplot(fig)
-                    # fig, ax = plt.subplots()
-                    # df[selected_column_names].boxplot(column=selected_column_names, grid=False)
-                    # st.pyplot(fig)
-                    fig, ax = plt.subplots()
-                    df[selected_column_names].plot.box()
-                    st.pyplot(fig=plt)
-
-                elif selected_type_of_plot == 'kde':
-                    # fig, ax = plt.subplots()
-                    # custom_plot = df[selected_column_names].plot(kind='kde')
-                    # #st.write(custom_plot)
-                    # st.pyplot(fig=plt)
-                    fig, ax = plt.subplots()
-                    df[selected_column_names].plot.kde()
-                    st.pyplot(fig=plt)
-
-            # -------
-
-        with st.expander(label="功能3：生成词云", expanded=False):
-            if type_of_string_columns_name:
-                selected_column = st.selectbox(label="选择列生成词云图", options=type_of_string_columns_name)
-                column_data_for_wc = df[selected_column]
-
-                if st.button("开始生成", key='page2_generate_wc'):
-                    txt = []
-                    for i in column_data_for_wc:
-                        txt.append(i)
-                    txt = ",".join(str(i) for i in txt)
-
-                    wc = WordCloud(font_path='fonts/宋体.ttc', background_color="white", collocations=False).generate(txt)
-
-                    fig, ax = plt.subplots()
-                    plt.imshow(wc)  # 以图片的形式显示词云
-                    plt.axis("off")  # 关闭图像坐标系
-                    st.pyplot(fig)  # 显示图片
-                    # -------
-            else:
-                st.info("该表没有字符串类型数据可供生成词云图")

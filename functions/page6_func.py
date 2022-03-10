@@ -2,51 +2,85 @@
 import streamlit as st
 
 import time
-import base64
 from faker import Faker
 import pandas as pd
+from io import BytesIO
+import random
 
 
 # ------------------Page6:faker data generate假数据生成--------------------
 timestr = time.strftime("%Y%m%d-%H%M%S")
 
-# Fxn to Download
-def make_downloadable_df(data):
-    csvfile = data.to_csv(index=False)
-    b64 = base64.b64encode(csvfile.encode()).decode()  # B64 encoding
-    st.markdown("### ** Download CSV File ** ")
-    new_filename = "fake_dataset_{}.csv".format(timestr)
-    href = f'<a href="data:file/csv;base64,{b64}" download="{new_filename}">Click Here!</a>'
-    st.markdown(href, unsafe_allow_html=True)
+
+def download_df(df):
+    df = df
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        st.download_button(label="Download data as CSV",
+                           data=make_downloadable_df_format(df, "csv"),
+                           file_name="fake_dataset_{}.csv".format(timestr),
+                           mime='text/csv',
+                           key='download_as_csv',
+                           help='click to download the above data as CSV'
+                           )
+    with col2:
+        st.download_button(label="Download data as XLSX",
+                           data=make_downloadable_df_format(df, "xlsx"),
+                           file_name="fake_dataset_{}.xlsx".format(timestr),
+                           mime='text/xlsx',
+                           key='download_as_xlsx',
+                           help='click to download the above data as XLSX(one sheet)'
+                           )
 
 
 # Fxn to Download Into A Format
-def make_downloadable_df_format(data, format_type="csv"):
+def make_downloadable_df_format(df, format_type):
     if format_type == "csv":
-        datafile = data.to_csv(index=False)
-    elif format_type == "json":
-        datafile = data.to_json()
-    b64 = base64.b64encode(datafile.encode()).decode()  # B64 encoding
-    st.markdown("### ** Download File  📩 ** ")
-    new_filename = "fake_dataset_{}.{}".format(timestr, format_type)
-    href = f'<a href="data:file/{format_type};base64,{b64}" download="{new_filename}">Click Here!</a>'
-    st.markdown(href, unsafe_allow_html=True)
+        datafile = df.to_csv(index=False).encode('GB2312')
+    elif format_type == "xlsx":
+        output = BytesIO()
+        writer = pd.ExcelWriter(output, engine='xlsxwriter')
+        df.to_excel(writer, index=False, sheet_name='Sheet1')
+        workbook = writer.book
+        worksheet = writer.sheets['Sheet1']
+        format1 = workbook.add_format({'num_format': '0.00'})
+        worksheet.set_column('A:A', None, format1)
+        writer.save()
+        datafile = output.getvalue()
+    return datafile
 
 
-# Generate A Simple Profile
-def generate_profile(number, random_seed=200):
-    fake = Faker()
+@st.cache
+# Generate A Profile Per Locality
+def generate_profile(number, locale, random_seed=200):
+    fake = Faker(locale)
     Faker.seed(random_seed)
     data = [fake.simple_profile() for i in range(number)]
     df = pd.DataFrame(data)
     return df
 
 
+@st.cache
 # Generate A Customized Profile Per Locality
-def generate_locale_profile(number, locale, random_seed=200):
-    locale_fake = Faker(locale)
+def generate_customized_profile(number, locale, fields, random_seed=200):
+    custom_fake = Faker(locale)
     Faker.seed(random_seed)
-    data = [locale_fake.simple_profile() for i in range(number)]
+    data = [custom_fake.profile(fields=fields) for i in range(number)]
     df = pd.DataFrame(data)
     return df
-# -----------------------------------------------------------------------
+
+
+def generate_customized_text(locale, types, number, max_chars):
+    random_seed = random.randint(1, 200)
+    custom_fake = Faker(locale)
+    Faker.seed(random_seed)
+    if types == "paragraphs":
+        return custom_fake.paragraphs(nb=number)
+    elif types == "sentences":
+        return custom_fake.sentences(nb=number)
+    elif types == "texts":
+        return custom_fake.texts(nb_texts=number, max_nb_chars=max_chars)
+    elif types == "words":
+        return custom_fake.words(nb=number, unique=True)
+    # text = lorem.Provider.words(self=faker., nb=3)
+    # return text

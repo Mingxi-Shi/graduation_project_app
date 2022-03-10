@@ -4,7 +4,7 @@ from functions.page5_func import *
 
 # 密码强度检测
 def page5():
-    st.write("This is page5")
+    st.write("This is page6")
 
     activities = ["Password Generation", "Password Strength Classifier"]
     choice = st.sidebar.selectbox("Select Activity", activities)

@@ -6,7 +6,7 @@ import gender_ai as ga
 
 # 性别分类
 def page4():
-    st.write("This is page4")
+    st.write("This is page5")
     st.title("Gender Classifier ML App")
     html_temp = """
         <div style="background-color:tomato;padding:5px;">

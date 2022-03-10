@@ -16,6 +16,7 @@ nlp = spacy.load("en_core_web_sm")
 
 from gensim.summarization import summarize
 
+
 # --------Page9:summarizer and entity checker总结和实体检查-----------------
 # Function for Sumy Summarization
 def sumy_summarizer(docx):

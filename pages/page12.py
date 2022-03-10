@@ -4,7 +4,7 @@ from functions.page12_func import *
 
 # 情感分析
 def page12():
-    st.write("This is page12")
+    st.write("This is page13")
 
     """Sentiment Analysis Emoji App """
 

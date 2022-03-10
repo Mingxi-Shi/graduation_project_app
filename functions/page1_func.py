@@ -36,13 +36,11 @@ def judge_original_datatype(df, i):
 
 # ------------------Page1:功能1-----------------------------------------
 def drop_na_any(df):
-    st.write('success')
     df = df.dropna(axis=0, how='any', subset=list(df.keys()))
     return df
 
 
 def drop_na_all(df):
-    st.write('success')
     df = df.dropna(axis=0, how='all', subset=list(df.keys()))
     return df
 # ---------------------------------------------------------------------
@@ -50,65 +48,56 @@ def drop_na_all(df):
 
 # ------------------Page1:功能2-----------------------------------------
 def drop_duplicates_first(df):
-    st.write('success')
     df = df.drop_duplicates(subset=list(df.keys()), keep='first')
     return df
 
 
 def drop_duplicates_last(df):
-    st.write('success')
     df = df.drop_duplicates(subset=list(df.keys()), keep='last')
     return df
 # ---------------------------------------------------------------------
 
 
 # ------------------Page1:功能3-----------------------------------------
-def fill_na_bfill(df):
-    st.write('success')
-    df = df.fillna(method='bfill')
+def fill_na_bfill(df, selected_columns):
+    df[selected_columns] = df[selected_columns].fillna(method='bfill', axis=0).fillna(method='ffill', axis=0)
     return df
 
 
-def fill_na_ffill(df):
-    st.write('success')
-    df = df.fillna(method='ffill')
+def fill_na_ffill(df, selected_columns):
+    df[selected_columns] = df[selected_columns].fillna(method='ffill', axis=0).fillna(method='bfill', axis=0)
     return df
 
 
-def fill_na_specific(df, fill_specific_value):
-    st.write('success')
-    df = df.fillna(value=fill_specific_value)
+def fill_na_specific(df, selected_columns, fill_specific_value):
+    df[selected_columns] = df[selected_columns].fillna(value=fill_specific_value)
     return df
 
 
 def replace_all_all_columns(df, to_replace, value):
-    st.write('success')
     df = df.replace(to_replace, value, inplace=False)
     return df
 
 
 def replace_all_single_columns(df, col, to_replace, value):
-    st.write('success')
     df[col] = df[col].replace(to_replace, value, inplace=False)
     return df
 
 
 def replace_part_all_columns(df, to_replace, value):  # 未使用
-    st.write('success')
     df = df.str.replace(to_replace, value)
     return df
 
 
 def replace_part_single_columns(df, col, to_replace, value):
-    st.write('success')
     df[col] = df[col].str.replace(to_replace, value)
     return df
 # ---------------------------------------------------------------------
 
 
 # ------------------Page1:功能7-----------------------------------------
+
 def search_location_numeric(df, value):
-    st.write('success')
     # col_name, row_index, count
     df_columns_name = df.columns.to_list()
     search_result = [[], [], 0]
@@ -122,7 +111,6 @@ def search_location_numeric(df, value):
 
 
 def search_location_string(df, value):
-    st.write('success')
     # col_name, row_index, count
     df_columns_name = df.columns.to_list()
     search_result = [[], [], 0]
@@ -136,13 +124,11 @@ def search_location_string(df, value):
 
 
 def search_value_numeric(df, col, row):
-    st.write('success')
     value = df[col][row]
     return value
 
 
 def search_value_string(df, col, row):  # 未使用
-    st.write('success')
     value = df[col][row]
     return value
 
@@ -172,7 +158,7 @@ def search_location_by_columns(df, cols, values):
 # 转换格式函数csv
 def convert2csv_df(df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
-    return df.to_csv().encode('GB2312')
+    return df.to_csv(index=False).encode('GB2312')
 
 
 # 转换格式函数xlsx
@@ -188,3 +174,5 @@ def convert2excel_df(df):
     processed_data = output.getvalue()
     return processed_data
 # ---------------------------------------------------------------------
+
+

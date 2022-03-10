@@ -4,7 +4,7 @@ from functions.page10_func import *
 
 # NLPiffy
 def page10():
-    st.write("This is page10")
+    st.write("This is page11")
     """ NLP Based App with Streamlit """
 
     # Title

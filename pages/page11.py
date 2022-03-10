@@ -4,7 +4,7 @@ from functions.page11_func import *
 
 # 提取电话和电子邮箱
 def page11():
-    st.write("This is page11")
+    st.write("This is page12")
     st.title("Email Extractor App")
     menu = ["Single Extractor", "Bulk Extractor"]
     choice = st.sidebar.selectbox("Menu", menu)

@@ -4,7 +4,7 @@ from functions.page9_func import *
 
 # 概要和实体检查器
 def page9():
-    st.write("This is page9")
+    st.write("This is page10")
     st.title("Summaryzer and Entity Checker")
 
     HTML_WRAPPER = """<div style="overflow-x: auto; border: 1px solid #e6e9ef; border-radius: 0.25rem; padding: 1rem">{}</div>"""
