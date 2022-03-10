@@ -124,6 +124,7 @@ def show_scatter(df):
     # https://www.jianshu.com/p/41735ecd3f75?utm_campaign=hugo
     # https://plotly.com/python-api-reference/plotly.express.html
 
+
 def generate_correlated_chart(df):
     columns = df.columns
     s1_choose = st.selectbox("请选择一种数据", columns[0:])
