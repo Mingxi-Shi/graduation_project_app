@@ -50,7 +50,6 @@ def main():
             page3()
 
     elif menu == "机器学习":
-        # menu_2 = st.sidebar.radio('选择', ('性别分类', '密码强度检测', '假数据生成', '人脸检测'))
         with st.sidebar:
             menu_2 = option_menu(menu_title="机器学习", options=["性别分类", "密码强度检测", "假数据生成", "人脸检测"],
                                  icons=["hypnotize", "hypnotize", "hypnotize", "hypnotize"], menu_icon="list-task",
@@ -82,25 +81,6 @@ def main():
             page12()
         elif menu_3 == '百度API':
             page13()
-
-    # date = st.sidebar.date_input(
-    #    label="Select a day",
-    #    value=datetime.datetime.now(),
-    #    help="You need to get help?\tContact us")
-
-    # time = st.sidebar.time_input(
-    #    label="Select an alarm",
-    #    value=datetime.time(8, 00),
-    #    help="You need to get help?\tContact us")
-
-    # color = st.sidebar.color_picker(
-    #    label="Pick a color",
-    #    value="#00f900",
-    #    help="You need to get help?\tContact us")
-
-    # st.sidebar.write("BGM func coming soon")
-    # st.sidebar.button("设置中心")
-    # st.sidebar.button("帮助中心")
 
 
 if __name__ == '__main__':

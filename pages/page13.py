@@ -1,9 +1,5 @@
-import matplotlib.pyplot as plt
-import squarify
 
 from functions.page13_func import *
-
-import streamlit as st
 
 
 def page13():

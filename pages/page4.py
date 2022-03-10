@@ -1,8 +1,6 @@
 
 from functions.page4_func import *
 
-import gender_ai as ga
-
 
 # 性别分类
 def page4():

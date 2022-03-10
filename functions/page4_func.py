@@ -2,6 +2,7 @@
 import streamlit as st
 
 from PIL import Image  # 图像处理标准库
+import gender_ai as ga
 
 
 # ------------------Page4:gender classifier性别识别------------------------

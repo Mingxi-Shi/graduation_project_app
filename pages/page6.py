@@ -1,4 +1,3 @@
-import streamlit
 
 from functions.page6_func import *
 

@@ -1,8 +1,3 @@
-import ast
-
-import pandas as pd
-import streamlit
-import streamlit.config_option
 
 from functions.page3_func import *
 
