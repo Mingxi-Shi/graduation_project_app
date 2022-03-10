@@ -6,8 +6,8 @@ import streamlit.components.v1 as components
 from pages.page1 import page1
 from pages.page2 import page2
 from pages.page3 import page3
-from pages.page3 import page4
-from pages.page4 import page5
+from pages.page4 import page4
+from pages.page5 import page5
 from pages.page6 import page6
 from pages.page7 import page7
 from pages.page8 import page8
