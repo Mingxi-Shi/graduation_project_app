@@ -120,9 +120,28 @@ def show_line(df):
 
 
 def show_scatter(df):
-    st.write(1)
-    # https://www.jianshu.com/p/41735ecd3f75?utm_campaign=hugo
-    # https://plotly.com/python-api-reference/plotly.express.html
+    col1, col2 = st.columns([5, 1])
+    with col2:
+        title = st.text_input(label="图表标题", value="散点图")
+        x_data = st.selectbox(label="x轴的列", options=df.columns.to_list())
+        y_data = st.selectbox(label="y轴的列", options=df.columns.to_list())
+        color = st.selectbox(label="分类", options=[None] + df.columns.to_list(), index=0)
+        symbol = st.selectbox(label="标记", options=[None] + df.columns.to_list(), index=0)
+        marginal_x = st.select_slider(label="外接图-x轴", options=[None, 'rug', 'box', 'violin', 'histogram'])
+        marginal_y = st.select_slider(label="外接图-y轴", options=[None, 'rug', 'box', 'violin', 'histogram'])
+        trendline = st.select_slider(label="趋势线", options=[None, 'ols', 'lowess', 'expanding', 'ewm'])
+
+    with col1:
+        fig = px.scatter(df,
+                         title=title,
+                         x=x_data,
+                         y=y_data,
+                         color=color,
+                         symbol=symbol,
+                         marginal_x=marginal_x,
+                         marginal_y=marginal_y,
+                         trendline=trendline)
+        st.plotly_chart(fig, use_container_width=True)
 
 
 def generate_correlated_chart(df):

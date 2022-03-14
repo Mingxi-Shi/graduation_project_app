@@ -98,7 +98,7 @@ def page2():
             # st.dataframe(df, height=500)
             col1, col2 = st.columns([1, 1])
             with col1:
-                selected_chart_type = st.selectbox(label="选择图表类型", options=["直方图", "折线图", "散点图", "词云图"])
+                selected_chart_type = st.selectbox(label="选择图表类型", options=["直方图", "折线图", "散点图"])
             with col2:
                 st.write(1)
 
