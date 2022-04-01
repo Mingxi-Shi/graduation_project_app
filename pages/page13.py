@@ -121,9 +121,11 @@ def page13():
                 else:
                     load_images('resources/images/optimistic.jpg')
             with p2:
-                st.success("参考回复话术：" + result["items"][0]["replies"][0])
+                if result["items"][0]["label"] != "neutral":
+                    st.success("参考回复话术：" + result["items"][0]["replies"][0])
             with p3:
                 st.info("情绪一级分类标签：" + result["items"][0]["label"] + "，概率：" + str(result["items"][0]["prob"]))
-                st.info("情绪二级分类标签：" + result["items"][0]["subitems"][0]["label"] + "，概率：" + str(result["items"][0]["subitems"][0]["prob"]))
+                if result["items"][0]["subitems"]:
+                    st.info("情绪二级分类标签：" + result["items"][0]["subitems"][0]["label"] + "，概率：" + str(result["items"][0]["subitems"][0]["prob"]))
 
 
