@@ -33,8 +33,8 @@ def page13():
             if result["summary"]:
                 result_summary = result["summary"]
                 st.write("摘要结果：", result_summary)
-                pyperclip.copy(result_summary)
-                st.info("已自动复制至剪切板")
+                # pyperclip.copy(result_summary)
+                # st.info("已自动复制至剪切板")
 
     elif page13_menu == "文本纠错":
         input_text = st.text_area(label="文本纠错", max_chars=240)
@@ -50,8 +50,8 @@ def page13():
                 st.info("总计%d处错误" % count)
                 st.write("纠错后结果：", result["item"]["correct_query"])
                 st.write("模型置信度：", result["item"]["score"])
-                pyperclip.copy(result["item"]["correct_query"])
-                st.info("已自动复制至剪切板")
+                # pyperclip.copy(result["item"]["correct_query"])
+                # st.info("已自动复制至剪切板")
 
     elif page13_menu == "文章分类":
         input_title_text = st.text_input(label="文章标题", max_chars=40)
