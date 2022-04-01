@@ -1,4 +1,4 @@
 freeglut3-dev
-libgtk2.0-dev
 xsel
 xclip
+libgtk-3-dev
