@@ -30,25 +30,28 @@ def page13():
         max_summary_length = st.number_input(label='摘要结果最大字数', value=len(input_text))
         if input_text and st.button("开始摘要"):
             result = client.newsSummary(input_text, max_summary_len=max_summary_length)
-            st.write("摘要结果：", result["summary"])
-            pyperclip.copy(result["summary"])
-            st.info("已自动复制至剪切板")
+            if result["summary"]:
+                result_summary = result["summary"]
+                st.write("摘要结果：", result_summary)
+                pyperclip.copy(result_summary)
+                st.info("已自动复制至剪切板")
 
     elif page13_menu == "文本纠错":
         input_text = st.text_area(label="文本纠错", max_chars=240)
         st.write("该文本的字数为：", len(input_text))
         if input_text and st.button("开始纠错"):
             result = client.ecnet(input_text)
-            count = 0
-            for i in result["item"]["vec_fragment"]:
-                st.error("检测到错误文本：" + i["ori_frag"])
-                st.success("修改为：" + i["correct_frag"])
-                count += 1
-            st.info("总计%d处错误" % count)
-            st.write("纠错后结果：", result["item"]["correct_query"])
-            st.write("模型置信度：", result["item"]["score"])
-            pyperclip.copy(result["item"]["correct_query"])
-            st.info("已自动复制至剪切板")
+            if result["item"]:
+                count = 0
+                for i in result["item"]["vec_fragment"]:
+                    st.error("检测到错误文本：" + i["ori_frag"])
+                    st.success("修改为：" + i["correct_frag"])
+                    count += 1
+                st.info("总计%d处错误" % count)
+                st.write("纠错后结果：", result["item"]["correct_query"])
+                st.write("模型置信度：", result["item"]["score"])
+                pyperclip.copy(result["item"]["correct_query"])
+                st.info("已自动复制至剪切板")
 
     elif page13_menu == "文章分类":
         input_title_text = st.text_input(label="文章标题", max_chars=40)
